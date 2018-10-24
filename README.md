@@ -7,7 +7,7 @@ An experimental attempt at modularizing the ~3000 line behemoth into bite sized 
 Because this is going to be a project consisting of many smaller files, on just one big one, this project wont work with teh curl and perl method of executing the original apache2buddy.pl script, so you'll need to git clone this one before executing it.
 
 # The plan
-
+```
 main_script.pl // not decided on a name for it yet, probably apache2buddy.pl
 /modules (folder)
 /modules/Rpm.pm
@@ -15,6 +15,7 @@ main_script.pl // not decided on a name for it yet, probably apache2buddy.pl
 /modules/Preflight.pm
 /modules/Rootcheck.pm
 etc....
+```
 
 The idea being that  the main script is much smaller and just contains the overall workflow and logic whereas the meat of each function will be in its own module file.
 
