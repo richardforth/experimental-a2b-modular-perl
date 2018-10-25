@@ -20,7 +20,8 @@ sub set {
 		NOCHKOS => 0,
 		SKIPMAXCLIENTS => 0,
 		SKIPPHPFATAL => 0,
-		SKIPUPDATES => 0
+		SKIPUPDATES => 0,
+		BBCODE => 0
 	);
 	return %config;
 }
