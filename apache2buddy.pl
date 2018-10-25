@@ -8,7 +8,6 @@ use warnings;
 # Import modules for use here
 use lib 'modules';
 require Box;
-require ColorSchemes;
 require Defaults;
 require Help;
 require Messaging;
