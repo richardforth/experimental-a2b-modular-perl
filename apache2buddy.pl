@@ -7,22 +7,20 @@ use warnings;
 
 # Import modules for use here
 use lib 'modules';
-require Syschecks;
 require Help;
-
+require Syschecks;
 
 ########################
-# GATHER CMD LINE ARGS #
+# Set Defaults         #
 ########################
-
 # if help is not asked for, we do not give it
-my $help = "";
+our $help = "";
 
 # by default, assume the terminal has dark background, eg putty 
-my $LIGHTBG = 0;
+our $LIGHTBG = 0;
 
 # if no port is specified, we default to 80
-my $port = 80;
+our $port = 80;
 
 # if no pid is specified, we default to 0
 our $pid = 0;
@@ -68,6 +66,10 @@ our $SKIPPHPFATAL = 0;
 # by default, do not skip updates check 
 our $SKIPUPDATES = 0;
 
+
+########################
+# GATHER CMD LINE ARGS #
+########################
 
 # grab the command line arguments
 GetOptions(
