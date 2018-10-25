@@ -1,8 +1,9 @@
 package Messaging;
 
 sub important {
+	my ($NOINFO, $YELLOW, $ENDC, $MESSAGE) = @_;
 	if ( ! $NOINFO ) {
-		print "\n${YELLOW}** IMPORTANT MESSAGE **\nImportant messages go here.${ENDC}\n";
+		print "${YELLOW}** $MESSAGE **${ENDC}\n";
 	}
 }
 

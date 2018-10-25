@@ -10,6 +10,7 @@ use lib 'modules';
 require Box;
 require Defaults;
 require Help;
+require Messaging;
 require Syschecks;
 
 ########################
@@ -124,4 +125,5 @@ if ( ! Syschecks::isRoot($BLUE, $BOLD, $ENDC) ) {
 	Box::crit($RED, $BOLD, $ENDC); print "${RED}Sorry, you need to be root to run this script${ENDC}.\nExiting.\n\n";
 	exit 1;
 }
-print "Done";
+
+Box::info($BLUE, $BOLD, $ENDC); Messaging::important($config{NOINFO}, $YELLOW, $ENDC,  "Done");
