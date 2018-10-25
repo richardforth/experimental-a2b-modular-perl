@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-our ($a, $b);
 use lib 'mods';
 require Vars;
 
