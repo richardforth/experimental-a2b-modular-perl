@@ -2,8 +2,6 @@ package Syschecks;
 use strict;
 use warnings;
 
-require Box;
-
 sub isRoot {
 	my $uid = `id -u`;
 	chomp($uid);
