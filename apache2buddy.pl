@@ -171,10 +171,10 @@ if ( $help eq 1 || $port eq 0 ) {
 ## Check we are root, otherwise we dont have enough privileges to check all the things.
 if ( ! Syschecks::isRoot() ) {
 	Box::crit($BOLD, $RED, $ENDC);
-	print "${RED}Sorry, you need to be root to run this script${ENDC}.\nExiting.\n\n";
+	Messaging::critical($RED, $ENDC, "Sorry, you need to be root to run this script\nExiting.");
 	exit 1;
 }
 if ( ! $NOINFO )  { 
 	Box::info($BOLD, $BLUE, $ENDC);
-	Messaging::important($YELLOW, $ENDC, "Done")
+	Messaging::important($YELLOW, $ENDC, "Done");
 }

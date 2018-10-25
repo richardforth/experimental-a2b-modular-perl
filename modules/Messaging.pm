@@ -5,6 +5,11 @@ sub important {
 	print "${YELLOW}** $MESSAGE **${ENDC}\n";
 }
 
+sub critical {
+	my ($RED, $ENDC, $MESSAGE) = @_;
+	print "${RED}CRITICAL ERROR: $MESSAGE${ENDC}\n";
+}
+
 
 
 1;
