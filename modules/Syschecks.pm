@@ -5,11 +5,8 @@ use warnings;
 require Box;
 
 sub isRoot {
-	my ($BLUE, $BOLD, $ENDC) = @_;
 	my $uid = `id -u`;
 	chomp($uid);
-
-	Box::info($BLUE, $BOLD, $ENDC); print "UID of user is: ".$uid."\n";
 
 	if ( $uid ne '0' ) {
 		# return False

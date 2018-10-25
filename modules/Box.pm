@@ -5,11 +5,11 @@ sub debug {
 }
 
 sub advisory {
-	print "[ $BOLD${YELLOW}\@\@${ENDC} ] "; 
+	print "[ ${BOLD}${YELLOW}\@\@${ENDC} ] "; 
 }
 
 sub info {
-	my ($BLUE, $BOLD, $ENDC) = @_;
+	my ($BOLD, $BLUE, $ENDC) = @_;
 	print "[ ${BOLD}${BLUE}--${ENDC} ] ";
 }
 
@@ -22,7 +22,6 @@ sub warn {
 }
 
 sub crit {
-	my ($RED, $BOLD, $ENDC) = @_;
 	print "[ ${BOLD}${RED}!!${ENDC} ] ";
 }
 

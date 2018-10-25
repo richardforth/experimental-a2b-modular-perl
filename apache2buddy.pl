@@ -8,6 +8,7 @@ use warnings;
 # Import modules for use here
 use lib 'modules';
 require Box;
+require ColorSchemes;
 require Defaults;
 require Help;
 require Messaging;
@@ -40,12 +41,14 @@ GetOptions(
 	'skip-php-fatal' => \$config{SKIPPHPFATAL},
 	'skip-updates' => \$config{SKIPUPDATES},
 	'skip-os-version-checki|O' => \$config{NOCHKOS},
-	'nonews' => \$config{NONEWS}
+	'nonews' => \$config{NONEWS},
+	'bbcode' => \$config{BBCODE}
 );
 
 # check for invalid options, bail if we find any and print the usage output
 if ( @ARGV > 0 ) {
-	Box::crit(); print " Invalid option: ";
+	#Box::crit();
+	print " Invalid option: ";
 	foreach (@ARGV) {
 		print $_." ";
 	}
@@ -65,65 +68,114 @@ if ( $config{REPORT} ) {
 	$config{SKIPUPDATES} = 1;
 }
 
-# Declare constants such as ANSI COLOR schemes.
-# TO SAVE CODE and thus also massively cut down on the file size, Ive decided to handle NOCOLOR here, 
-# instead of on every single line where I need to print something. it seems much simpler and cleaner
-# to print an empty string rather than an escape sequence, rather than doubling up on print() statements.
+# NOW CREATE SHORTCUTS FOR THE OPTIONS NOW THEY ARE SET IN STONE
+my $help = $config{help};
+my $port = $config{port};
+my $pid = $config{pid};
+my $VERBOSE = $config{VERBOSE};
+my $NOCOLOR = $config{NOCOLOR};
+my $NOINFO = $config{NOINFO};
+my $NOWARN = $config{NOWARN};
+my $REPORT = $config{REPORT};
+my $LIGHTBG = $config{LIGHTBG};
+my $NOOK = $config{NOOK};
+my $NOHEADER = $config{NOHEADER};
+my $NOCHKPID = $config{NOCHKPID};
+my $SKIPMAXCLIENTS = $config{SKIPMAXCLIENTS};
+my $SKIPPHPFATAL = $config{SKIPPHPFATAL};
+my $SKIPUPDATES = $config{SKIPUPDATES};
+my $NOCHKOS = $config{NOCHKOS};
+my $NONEWS = $config{NONEWS};
+my $BBCODE = $config{BBCODE};
+
+############################################
+#  SET UP COLOR SCHEMES                    #
+############################################
+
 our $RED;
 our $GREEN;
 our $YELLOW;
 our $BLUE;
 our $PURPLE;
 our $CYAN;
-our $ENDC;
+our $WHITE;
+our $ENDC = "\033[0m"; # reset the terminal color
 our $BOLD;
+our $ENDBOLD; # This is for the BBCODE [/b] tag
 our $UNDERLINE;
-if ( ! $config{NOCOLOR} ) {
-	if ( ! $config{LIGHTBG} ) {
-		$RED = "\033[91m";
-		$GREEN = "\033[92m"; # Like a light green color, not good for light terminals, but perfect for dark, eg PuTTY, terminals.
-		$YELLOW = "\033[93m"; # Like a yellow color, not good for light terminals, but perfect for dark, eg PuTTY, terminals.
-		$BLUE = "\033[94m";
-		$PURPLE = "\033[95m"; # technically its Magento... 
-		$CYAN = "\033[96m"; # Like a light blue color, not good for light terminals, but perfect for dark, eg PuTTY, terminals.
-	} else {
-		$RED = "\033[1m"; # bold all the things!
-		$GREEN = "\033[1m"; # bold all the things!
-		$YELLOW = "\033[1m"; # bold all the things!
-		$BLUE = "\033[1m"; # bold all the things!
-		$PURPLE = "\033[1m"; # bold all the things!
-		$CYAN = "\033[1m";  # bold all the things!
-	}
-	$ENDC = "\033[0m"; # reset the terminal color
-	$BOLD = "\033[1m"; # what it says on the tin, you can double up eg make a bold red: ${BOLD}${RED}Something${ENDC}
-	$UNDERLINE = "\033[4m"; # again you can double this one up.
-} else {
+our $ENDUNDERLINE; # This is for BBCODE [/u] tag
+
+if ($NOCOLOR) {
 	$RED = ""; # SUPPRESS COLORS
 	$GREEN = ""; # SUPPRESS COLORS
 	$YELLOW = ""; # SUPPRESS COLORS
 	$BLUE = ""; # SUPPRESS COLORS
 	$PURPLE = ""; # SUPPRESS COLORS
 	$CYAN = ""; # SUPPRESS COLORS
+	$WHITE = ""; # SUPPRESS COLORS
 	$ENDC = ""; # SUPPRESS COLORS
 	$BOLD = ""; # SUPPRESS COLORS
+	$ENDBOLD = ""; # SUPPRESS COLORS
 	$UNDERLINE = ""; # SUPPRESS COLORS
+	$ENDUNDERLINE = ""; # SUPPRESS COLORS
+} elsif ($LIGHTBG) {
+	$RED = "\033[1m"; # bold all the things!
+	$GREEN = "\033[1m"; # bold all the things!
+	$YELLOW = "\033[1m"; # bold all the things!
+	$BLUE = "\033[1m"; # bold all the things!
+	$PURPLE = "\033[1m"; # bold all the things!
+	$CYAN = "\033[1m";  # bold all the things!
+	$WHITE = "\033[1m";  # bold all the things!
+	$BOLD = "\033[1m"; # Default to ANSI codes.     
+	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
+	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
+	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
+	$ENDC = "\033[0m"; # Default to ANSI codes
+} elsif ($BBCODE) {
+	$RED = "[color=#FF0000]"; # 
+	$GREEN = "[color=#0000FF]"; # Make GREEN appear as BLUE, as green looks horrid on forums, hard to read. 
+	$YELLOW = "[color=#000000]"; # Make YELLOW appear as a black default. 
+	$BLUE = "[color=#0000FF]"; # 
+	$PURPLE =  "[color=#000000]"; # Make PURPLE appear as a black default. 
+	$CYAN =  "[color=#000000]"; # Make CYAN appear as a black default.
+	$WHITE =  "[color=#000000]"; # Make WHITE appear as a black default.
+	$BOLD = "[b]"; # 
+	$ENDBOLD = "[/b]"; # 
+	$UNDERLINE = "[u]"; # 
+	$ENDUNDERLINE = "[/u]"; # 
+	$ENDC = "[/color]"; # 
+} else {
+	$RED = "\033[91m"; # Default to ANSI codes.
+	$GREEN = "\033[92m"; # Default to ANSI codes. 
+	$YELLOW = "\033[93m"; # Default to ANSI codes. 
+	$BLUE = "\033[94m"; # Default to ANSI codes.  
+	$PURPLE = "\033[95m"; # Default to ANSI codes.     
+	$CYAN = "\033[96m"; # Default to ANSI codes.     
+	$WHITE = "\033[97m"; # Default to ANSI codes.     
+	$BOLD = "\033[1m"; # Default to ANSI codes.     
+	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
+	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
+	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
+	$ENDC = "\033[0m"; # Default to ANSI codes
 }
-
 
 #########################
 ## BEGIN MAIN EXECUTION #
 #########################
 
 ## if the user has added the help flag, or if they have defined a port  
-if ( $config{help} eq 1 || $config{port} eq 0 ) {
+if ( $help eq 1 || $port eq 0 ) {
 	Help::usage();
 	exit;
 }
 
 ## Check we are root, otherwise we dont have enough privileges to check all the things.
-if ( ! Syschecks::isRoot($BLUE, $BOLD, $ENDC) ) {
-	Box::crit($RED, $BOLD, $ENDC); print "${RED}Sorry, you need to be root to run this script${ENDC}.\nExiting.\n\n";
+if ( ! Syschecks::isRoot() ) {
+	Box::crit($BOLD, $RED, $ENDC);
+	print "${RED}Sorry, you need to be root to run this script${ENDC}.\nExiting.\n\n";
 	exit 1;
 }
-
-Box::info($BLUE, $BOLD, $ENDC); Messaging::important($config{NOINFO}, $YELLOW, $ENDC,  "Done");
+if ( ! $NOINFO )  { 
+	Box::info($BOLD, $BLUE, $ENDC);
+	Messaging::important($YELLOW, $ENDC, "Done")
+}
