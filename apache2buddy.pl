@@ -7,94 +7,44 @@ use warnings;
 
 # Import modules for use here
 use lib 'modules';
+require Box;
+require Defaults;
 require Help;
 require Syschecks;
 
 ########################
 # Set Defaults         #
 ########################
-# if help is not asked for, we do not give it
-our $help = "";
-
-# by default, assume the terminal has dark background, eg putty 
-our $LIGHTBG = 0;
-
-# if no port is specified, we default to 80
-our $port = 80;
-
-# if no pid is specified, we default to 0
-our $pid = 0;
-
-# by default, do not use verbose output
-our $VERBOSE = "";
-
-# by default, use color output
-our $NOCOLOR = 0;
-
-# by default, show news messages 
-our $NONEWS = 0;
-
-# by default, show informational messages 
-our $NOINFO = 0;
-
-# by default, show ok messages 
-our $NOOK = 0;
-
-# by default, show warnings 
-our $NOWARN = 0;
-
-# by default, show full output 
-our $REPORT = 0;
-
-# by default, show header 
-our $NOHEADER = 0;
-
-# by default, check pid size 
-our $NOCHKPID = 0;
-
-# by default, check OS support
-our $NOCHKOS = 0;
-
-# add 'skip section' options...
-
-# by default, do not skip maxclients check
-our $SKIPMAXCLIENTS = 0;
-
-# by default, do not skip php fatal errors check 
-our $SKIPPHPFATAL = 0;
-
-# by default, do not skip updates check 
-our $SKIPUPDATES = 0;
-
+our %config  = Defaults::set();
 
 ########################
 # GATHER CMD LINE ARGS #
 ########################
 
-# grab the command line arguments
+# grab the command line arguments, and update the config accordingly
 GetOptions(
-	'help|h' => \$help,
-	'port|p:i' => \$port,
-	'pid:i' => \$pid,
-	'verbose|v' => \$VERBOSE,
-	'nocolor|n' => \$main::NOCOLOR,
-	'noinfo|N' => \$NOINFO,
-	'nowarn|W' => \$NOWARN,
-	'report|r' => \$REPORT,
-	'light-term|L' => \$LIGHTBG,
-	'no-ok|K' => \$NOOK,
-	'noheader|H' => \$NOHEADER,
-	'no-check-pid|P' => \$NOCHKPID,
-	'skip-maxclients' => \$SKIPMAXCLIENTS,
-	'skip-php-fatal' => \$SKIPPHPFATAL,
-	'skip-updates' => \$SKIPUPDATES,
-	'skip-os-version-checki|O' => \$NOCHKOS,
-	'nonews' => \$NONEWS
+	'help|h' => \$config{help},
+	'port|p:i' => \$config{port},
+	'pid:i' => \$config{pid},
+	'verbose|v' => \$config{VERBOSE},
+	'nocolor|n' => \$config{NOCOLOR},
+	'noinfo|N' => \$config{NOINFO},
+	'nowarn|W' => \$config{NOWARN},
+	'report|r' => \$config{REPORT},
+	'light-term|L' => \$config{LIGHTBG},
+	'no-ok|K' => \$config{NOOK},
+	'noheader|H' => \$config{NOHEADER},
+	'no-check-pid|P' => \$config{NOCHKPID},
+	'skip-maxclients' => \$config{SKIPMAXCLIENTS},
+	'skip-php-fatal' => \$config{SKIPPHPFATAL},
+	'skip-updates' => \$config{SKIPUPDATES},
+	'skip-os-version-checki|O' => \$config{NOCHKOS},
+	'nonews' => \$config{NONEWS}
 );
 
 # check for invalid options, bail if we find any and print the usage output
 if ( @ARGV > 0 ) {
-	print "Invalid option: ";
+	Box::crit(); print " Invalid option: ";
 	foreach (@ARGV) {
 		print $_." ";
 	}
@@ -103,15 +53,15 @@ if ( @ARGV > 0 ) {
 	exit;
 }
 
-if ( $REPORT ) {
-	$NOHEADER = 1;
-	$NOINFO = 1;
-	$NONEWS = 1;
-	$NOWARN = 1;
-	$NOOK = 1;
-	$SKIPMAXCLIENTS = 1;
-	$SKIPPHPFATAL = 1;
-	$SKIPUPDATES = 1;
+if ( $config{REPORT} ) {
+	$config{NOHEADER} = 1;
+	$config{NOINFO} = 1;
+	$config{NONEWS} = 1;
+	$config{NOWARN} = 1;
+	$config{NOOK} = 1;
+	$config{SKIPMAXCLIENTS} = 1;
+	$config{SKIPPHPFATAL} = 1;
+	$config{SKIPUPDATES} = 1;
 }
 
 # Declare constants such as ANSI COLOR schemes.
@@ -127,8 +77,8 @@ our $CYAN;
 our $ENDC;
 our $BOLD;
 our $UNDERLINE;
-if ( ! $NOCOLOR ) {
-	if ( ! $LIGHTBG ) {
+if ( ! $config{NOCOLOR} ) {
+	if ( ! $config{LIGHTBG} ) {
 		$RED = "\033[91m";
 		$GREEN = "\033[92m"; # Like a light green color, not good for light terminals, but perfect for dark, eg PuTTY, terminals.
 		$YELLOW = "\033[93m"; # Like a yellow color, not good for light terminals, but perfect for dark, eg PuTTY, terminals.
@@ -164,14 +114,14 @@ if ( ! $NOCOLOR ) {
 #########################
 
 ## if the user has added the help flag, or if they have defined a port  
-if ( $help eq 1 || $port eq 0 ) {
+if ( $config{help} eq 1 || $config{port} eq 0 ) {
 	Help::usage();
 	exit;
 }
 
 ## Check we are root, otherwise we dont have enough privileges to check all the things.
-if ( ! Syschecks::isRoot() ) {
-	print "Sorry, you need to be root to run this script.\nExiting.\n\n";
+if ( ! Syschecks::isRoot($BLUE, $BOLD, $ENDC) ) {
+	Box::crit($RED, $BOLD, $ENDC); print "${RED}Sorry, you need to be root to run this script${ENDC}.\nExiting.\n\n";
 	exit 1;
 }
 print "Done";
