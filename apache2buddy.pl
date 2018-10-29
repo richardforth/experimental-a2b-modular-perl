@@ -7,12 +7,14 @@ use warnings;
 
 # Import modules for use here
 use lib 'modules';
+require Banners;
 require Box;
 require ColorSchemes;
 require Defaults;
 require Help;
 require Messaging;
 require Syschecks;
+require System;
 
 ########################
 # Set Defaults         #
@@ -130,6 +132,15 @@ if ( ! Syschecks::isRoot() ) {
 	Messaging::critical($RED, $ENDC, "Sorry, you need to be root to run this script\nExiting.");
 	exit 1;
 }
+
+
+my $servername = System::get_hostname();
+my $ipaddr = System::get_ip();
+#my $headerstring = "apache2buddy.pl report for $servername ($ipaddr)";
+my $headerstring = "apache2buddy.pl report" ;
+Banners::Heading($headerstring);
+
+
 if ( ! $NOINFO )  { 
 	Box::info($BOLD, $BLUE, $ENDC);
 	Messaging::important($YELLOW, $ENDC, "Done");
