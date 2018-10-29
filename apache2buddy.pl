@@ -101,18 +101,18 @@ if ($NOCOLOR) {
 } else {
 	%colors = ColorSchemes::getAnsi() 
 }
-our $RED;
-our $GREEN;
-our $YELLOW;
-our $BLUE;
-our $PURPLE;
-our $CYAN;
-our $WHITE;
-our $ENDC;
-our $BOLD;
-our $ENDBOLD;
-our $UNDERLINE;
-our $ENDUNDERLINE;
+our $RED = $colors{RED};
+our $GREEN = $colors{GREEN};
+our $YELLOW = $colors{YELLOW};
+our $BLUE = $colors{BLUE};
+our $PURPLE = $colors{PURPLE};
+our $CYAN = $colors{CYAN};
+our $WHITE = $colors{WHITE};
+our $ENDC = $colors{ENDC};
+our $BOLD = $colors{BOLD};
+our $ENDBOLD = $colors{ENDBOLD};
+our $UNDERLINE = $colors{UNDERLINE};
+our $ENDUNDERLINE = $colors{ENDUNDERLINE};
 
 #########################
 ## BEGIN MAIN EXECUTION #
