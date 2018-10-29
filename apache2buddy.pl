@@ -8,6 +8,7 @@ use warnings;
 # Import modules for use here
 use lib 'modules';
 require Box;
+require ColorSchemes;
 require Defaults;
 require Help;
 require Messaging;
@@ -90,7 +91,16 @@ my $BBCODE = $config{BBCODE};
 ############################################
 #  SET UP COLOR SCHEMES                    #
 ############################################
-
+our %colors;
+if ($NOCOLOR) {
+	%colors = ColorSchemes::getNone() 
+} elsif ($LIGHTBG) {
+	%colors = ColorSchemes::getLight() 
+} elsif ($BBCODE) {
+	%colors = ColorSchemes::getBBCode() 
+} else {
+	%colors = ColorSchemes::getAnsi() 
+}
 our $RED;
 our $GREEN;
 our $YELLOW;
@@ -98,65 +108,11 @@ our $BLUE;
 our $PURPLE;
 our $CYAN;
 our $WHITE;
-our $ENDC = "\033[0m"; # reset the terminal color
+our $ENDC;
 our $BOLD;
-our $ENDBOLD; # This is for the BBCODE [/b] tag
+our $ENDBOLD;
 our $UNDERLINE;
-our $ENDUNDERLINE; # This is for BBCODE [/u] tag
-
-if ($NOCOLOR) {
-	$RED = ""; # SUPPRESS COLORS
-	$GREEN = ""; # SUPPRESS COLORS
-	$YELLOW = ""; # SUPPRESS COLORS
-	$BLUE = ""; # SUPPRESS COLORS
-	$PURPLE = ""; # SUPPRESS COLORS
-	$CYAN = ""; # SUPPRESS COLORS
-	$WHITE = ""; # SUPPRESS COLORS
-	$ENDC = ""; # SUPPRESS COLORS
-	$BOLD = ""; # SUPPRESS COLORS
-	$ENDBOLD = ""; # SUPPRESS COLORS
-	$UNDERLINE = ""; # SUPPRESS COLORS
-	$ENDUNDERLINE = ""; # SUPPRESS COLORS
-} elsif ($LIGHTBG) {
-	$RED = "\033[1m"; # bold all the things!
-	$GREEN = "\033[1m"; # bold all the things!
-	$YELLOW = "\033[1m"; # bold all the things!
-	$BLUE = "\033[1m"; # bold all the things!
-	$PURPLE = "\033[1m"; # bold all the things!
-	$CYAN = "\033[1m";  # bold all the things!
-	$WHITE = "\033[1m";  # bold all the things!
-	$BOLD = "\033[1m"; # Default to ANSI codes.     
-	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
-	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
-	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
-	$ENDC = "\033[0m"; # Default to ANSI codes
-} elsif ($BBCODE) {
-	$RED = "[color=#FF0000]"; # 
-	$GREEN = "[color=#0000FF]"; # Make GREEN appear as BLUE, as green looks horrid on forums, hard to read. 
-	$YELLOW = "[color=#000000]"; # Make YELLOW appear as a black default. 
-	$BLUE = "[color=#0000FF]"; # 
-	$PURPLE =  "[color=#000000]"; # Make PURPLE appear as a black default. 
-	$CYAN =  "[color=#000000]"; # Make CYAN appear as a black default.
-	$WHITE =  "[color=#000000]"; # Make WHITE appear as a black default.
-	$BOLD = "[b]"; # 
-	$ENDBOLD = "[/b]"; # 
-	$UNDERLINE = "[u]"; # 
-	$ENDUNDERLINE = "[/u]"; # 
-	$ENDC = "[/color]"; # 
-} else {
-	$RED = "\033[91m"; # Default to ANSI codes.
-	$GREEN = "\033[92m"; # Default to ANSI codes. 
-	$YELLOW = "\033[93m"; # Default to ANSI codes. 
-	$BLUE = "\033[94m"; # Default to ANSI codes.  
-	$PURPLE = "\033[95m"; # Default to ANSI codes.     
-	$CYAN = "\033[96m"; # Default to ANSI codes.     
-	$WHITE = "\033[97m"; # Default to ANSI codes.     
-	$BOLD = "\033[1m"; # Default to ANSI codes.     
-	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
-	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
-	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
-	$ENDC = "\033[0m"; # Default to ANSI codes
-}
+our $ENDUNDERLINE;
 
 #########################
 ## BEGIN MAIN EXECUTION #
