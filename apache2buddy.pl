@@ -136,9 +136,9 @@ if ( ! Syschecks::isRoot() ) {
 
 my $servername = System::get_hostname();
 my $ipaddr = System::get_ip();
-#my $headerstring = "apache2buddy.pl report for $servername ($ipaddr)";
-my $headerstring = "apache2buddy.pl report" ;
-Banners::Heading($headerstring);
+my $headerstring = "apache2buddy.pl report for $servername ($ipaddr)";
+#my $headerstring = "apache2buddy.pl report" ;
+Banners::Heading($GREEN, $ENDC, $headerstring);
 
 
 if ( ! $NOINFO )  { 
