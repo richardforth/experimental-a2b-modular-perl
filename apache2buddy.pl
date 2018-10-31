@@ -146,6 +146,12 @@ if ( ! Syschecks::isRoot() ) {
 	}		
 }
 
+## Run preflight checks
+require PreFlightChecks;
+my %results = PreFlightChecks::getResults();
+foreach my $key  (keys %results) {
+	print "$key => $results{$key}\n";
+}
 
 if ( ! $NOINFO )  { 
 	Box::info($BOLD, $BLUE, $ENDC);
