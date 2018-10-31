@@ -126,19 +126,25 @@ if ( $help eq 1 || $port eq 0 ) {
 	exit;
 }
 
+## SHOW MAIN BANNER
+my $servername = System::get_hostname();
+my $ipaddr = System::get_ip();
+my $headerstring = "apache2buddy.pl report for $servername ($ipaddr)";
+#my $headerstring = "apache2buddy.pl report" ;
+Banners::Heading($GREEN, $ENDC, $headerstring);
+
+## CHECK WE ARE RUNNING AS ROOT
 ## Check we are root, otherwise we dont have enough privileges to check all the things.
 if ( ! Syschecks::isRoot() ) {
 	Box::crit($BOLD, $RED, $ENDC);
 	Messaging::critical($RED, $ENDC, "Sorry, you need to be root to run this script\nExiting.");
 	exit 1;
+} else {
+	if ( ! $NOOK ) {
+		Box::ok($BOLD, $GREEN, $ENDC);
+		Messaging::okay("This script is being run as root.");
+	}		
 }
-
-
-my $servername = System::get_hostname();
-my $ipaddr = System::get_ip();
-#my $headerstring = "apache2buddy.pl report for $servername ($ipaddr)";
-my $headerstring = "apache2buddy.pl report" ;
-Banners::Heading($headerstring);
 
 
 if ( ! $NOINFO )  { 
