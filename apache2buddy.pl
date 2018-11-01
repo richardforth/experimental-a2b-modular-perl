@@ -8,12 +8,10 @@ use warnings;
 # Import modules for use here
 use lib 'modules';
 require Banners;
-require Box;
 require ColorSchemes;
 require Defaults;
 require Help;
 require Messaging;
-require Syschecks;
 require System;
 
 ########################
@@ -31,11 +29,9 @@ GetOptions(
 	'port|p:i' => \$config{port},
 	'pid:i' => \$config{pid},
 	'verbose|v' => \$config{VERBOSE},
-	'nocolor|n' => \$config{NOCOLOR},
 	'noinfo|N' => \$config{NOINFO},
 	'nowarn|W' => \$config{NOWARN},
 	'report|r' => \$config{REPORT},
-	'light-term|L' => \$config{LIGHTBG},
 	'no-ok|K' => \$config{NOOK},
 	'noheader|H' => \$config{NOHEADER},
 	'no-check-pid|P' => \$config{NOCHKPID},
@@ -44,7 +40,6 @@ GetOptions(
 	'skip-updates' => \$config{SKIPUPDATES},
 	'skip-os-version-checki|O' => \$config{NOCHKOS},
 	'nonews' => \$config{NONEWS},
-	'bbcode' => \$config{BBCODE}
 );
 
 # check for invalid options, bail if we find any and print the usage output
@@ -75,11 +70,9 @@ my $help = $config{help};
 my $port = $config{port};
 my $pid = $config{pid};
 my $VERBOSE = $config{VERBOSE};
-my $NOCOLOR = $config{NOCOLOR};
 my $NOINFO = $config{NOINFO};
 my $NOWARN = $config{NOWARN};
 my $REPORT = $config{REPORT};
-my $LIGHTBG = $config{LIGHTBG};
 my $NOOK = $config{NOOK};
 my $NOHEADER = $config{NOHEADER};
 my $NOCHKPID = $config{NOCHKPID};
@@ -88,33 +81,32 @@ my $SKIPPHPFATAL = $config{SKIPPHPFATAL};
 my $SKIPUPDATES = $config{SKIPUPDATES};
 my $NOCHKOS = $config{NOCHKOS};
 my $NONEWS = $config{NONEWS};
-my $BBCODE = $config{BBCODE};
 
 ############################################
 #  SET UP COLOR SCHEMES                    #
 ############################################
-our %colors;
-if ($NOCOLOR) {
-	%colors = ColorSchemes::getNone() 
-} elsif ($LIGHTBG) {
-	%colors = ColorSchemes::getLight() 
-} elsif ($BBCODE) {
-	%colors = ColorSchemes::getBBCode() 
-} else {
-	%colors = ColorSchemes::getAnsi() 
-}
-our $RED = $colors{RED};
-our $GREEN = $colors{GREEN};
-our $YELLOW = $colors{YELLOW};
-our $BLUE = $colors{BLUE};
-our $PURPLE = $colors{PURPLE};
-our $CYAN = $colors{CYAN};
-our $WHITE = $colors{WHITE};
-our $ENDC = $colors{ENDC};
-our $BOLD = $colors{BOLD};
-our $ENDBOLD = $colors{ENDBOLD};
-our $UNDERLINE = $colors{UNDERLINE};
-our $ENDUNDERLINE = $colors{ENDUNDERLINE};
+#our %colors;
+#if ($NOCOLOR) {
+#	%colors = ColorSchemes::getNone() 
+#} elsif ($LIGHTBG) {
+#	%colors = ColorSchemes::getLight() 
+#} elsif ($BBCODE) {
+#	%colors = ColorSchemes::getBBCode() 
+#} else {
+#	%colors = ColorSchemes::getAnsi() 
+#}
+#our $RED = $colors{RED};
+#our $GREEN = $colors{GREEN};
+#our $YELLOW = $colors{YELLOW};
+#our $BLUE = $colors{BLUE};
+#our $PURPLE = $colors{PURPLE};
+#our $CYAN = $colors{CYAN};
+#our $WHITE = $colors{WHITE};
+#our $ENDC = $colors{ENDC};
+#our $BOLD = $colors{BOLD};
+#our $ENDBOLD = $colors{ENDBOLD};
+#our $UNDERLINE = $colors{UNDERLINE};
+#our $ENDUNDERLINE = $colors{ENDUNDERLINE};
 
 #########################
 ## BEGIN MAIN EXECUTION #
@@ -130,30 +122,23 @@ if ( $help eq 1 || $port eq 0 ) {
 my $servername = System::get_hostname();
 my $ipaddr = System::get_ip();
 my $headerstring = "apache2buddy.pl report for $servername ($ipaddr)";
-#my $headerstring = "apache2buddy.pl report" ;
-Banners::Heading($GREEN, $ENDC, $headerstring);
-
-## CHECK WE ARE RUNNING AS ROOT
-## Check we are root, otherwise we dont have enough privileges to check all the things.
-if ( ! Syschecks::isRoot() ) {
-	Box::crit($BOLD, $RED, $ENDC);
-	Messaging::critical($RED, $ENDC, "Sorry, you need to be root to run this script\nExiting.");
-	exit 1;
-} else {
-	if ( ! $NOOK ) {
-		Box::ok($BOLD, $GREEN, $ENDC);
-		Messaging::okay("This script is being run as root.");
-	}		
-}
+Banners::Heading($headerstring);
 
 ## Run preflight checks
 require PreFlightChecks;
 my %results = PreFlightChecks::getResults();
+
+## CHECK WE ARE RUNNING AS ROOT
+## Check we are root, otherwise we dont have enough privileges to check all the things.
+if ( ! $results{isroot} ) {
+	Messaging::critical("Need to be root to run this script, exiting...");
+	exit 1
+}
+
 foreach my $key  (keys %results) {
 	print "$key => $results{$key}\n";
 }
 
 if ( ! $NOINFO )  { 
-	Box::info($BOLD, $BLUE, $ENDC);
-	Messaging::important($YELLOW, $ENDC, "Done");
+	Messaging::info("Done");
 }
