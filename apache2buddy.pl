@@ -142,14 +142,23 @@ foreach my $key  (keys %results) {
 ## GATHER FACTS
 require SystemFacts;
 my %sysfacts = SystemFacts::getFacts();
-foreach my $key  (keys %sysfacts) {
+foreach my $key (keys %sysfacts) {
 	print "$key => $sysfacts{$key}\n";
 }
 
 require ApacheFacts;
 my %apachefacts = ApacheFacts::getFacts();
-foreach my $key  (keys %apachefacts) {
+foreach my $key (keys %apachefacts) {
 	print "$key => $apachefacts{$key}\n";
 }
+
+
+## get panels
+require Panels;
+my %panels = Panels::getPanels();
+foreach my $key (sort {$a cmp $b} keys %panels) {
+	print "$key => $panels{$key}\n";
+}
+
 
 Messaging::info("Done");
