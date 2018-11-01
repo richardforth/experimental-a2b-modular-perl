@@ -2,8 +2,19 @@ package PreFlightChecks;
 
 my %pfcs;
 
+
+my $uid = `id -u`;
+chomp($uid);
+if ( $uid ne '0' ) {
+	$pfcs{isroot} = 0;
+} else {
+	$pfcs{isroot} = 1;
+}
+
+1;
+
 ## check for pmap
-my $pmap = `which pmap`;
+my $pmap = `which pmap 2>/dev/null`;
 chomp($pmap);
 # make sure that pmap is available within our path
 if ( $pmap !~ m/.*\/pmap/ ) { 
@@ -13,7 +24,7 @@ if ( $pmap !~ m/.*\/pmap/ ) {
 }
 
 ## check for netstst
-my $netstat = `which netstat`;
+my $netstat = `which netstat 2>/dev/null`;
 chomp($netstat);
 # make sure that netstat is available within our path
 if ( $netstat !~ m/.*\/netstat/ ) { 
@@ -23,7 +34,7 @@ if ( $netstat !~ m/.*\/netstat/ ) {
 }
 
 ## check for php
-my $php = `which php`;
+my $php = `which php 2>/dev/null`;
 chomp ($php);
 if ( $php !~ m/.*\/php/ ) {
 	$pfcs{php} = 0;
@@ -32,7 +43,7 @@ if ( $php !~ m/.*\/php/ ) {
 }
 
 ## check for apachectl
-my $ac = `which apachectl`;
+my $ac = `which apachectl 2>/dev/null`;
 chomp ($ac);
 if ( $ac !~ m/.*\/apachectl/ ) {
 	$pfcs{apachectl} = 0;
@@ -46,9 +57,9 @@ if ( $ac !~ m/.*\/apachectl/ ) {
 }
 
 ## check for python
-my $python = `which python`;
-chomp ($php);
-if ( $php !~ m/.*\/python/ ) {
+my $python = `which python 2>/dev/null`;
+chomp ($python);
+if ( $python !~ m/.*\/python/ ) {
 	$pfcs{python} = 0;
 } else {
 	$pfcs{python} = 1;

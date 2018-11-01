@@ -1,11 +1,11 @@
 package Banners;
 
 sub Heading {
-	my ($colorstart, $ENDC, $message) = @_;
+	my ($message) = @_;
 	my $hrline = "#" x length($message);
-	print ${colorstart} . $hrline . ${ENDC} . "\n";
+	print $hrline . "\n";
 	print $message . "\n";
-	print ${colorstart} . $hrline . ${ENDC} ."\n";
+	print $hrline . "\n";
 }
 
 1;

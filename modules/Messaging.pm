@@ -1,15 +1,23 @@
 package Messaging;
 
-sub important {
-	my ($YELLOW, $ENDC, $MESSAGE) = @_;
-	print "${YELLOW}** $MESSAGE **${ENDC}\n";
+sub info {
+	my ($message) = @_;
+	print "[ -- ] $message\n";
 }
 
 sub critical {
-	my ($RED, $ENDC, $MESSAGE) = @_;
-	print "${RED}CRITICAL ERROR: $MESSAGE${ENDC}\n";
+	my ($message) = @_;
+	print "[ !! ] $message\n";
 }
 
+sub advice {
+	my ($message) = @_;
+	print "[ @@ ] $message\n";
+}
 
+sub warning {
+	my ($message) = @_;
+	print "[ >> ] $message\n";
+}
 
 1;
