@@ -142,7 +142,7 @@ if ( ! Syschecks::isRoot() ) {
 } else {
 	if ( ! $NOOK ) {
 		Box::ok($BOLD, $GREEN, $ENDC);
-		okay("This script is being run as root.");
+		Messaging::okay("This script is being run as root.");
 	}		
 }
 
