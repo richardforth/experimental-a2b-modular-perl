@@ -132,13 +132,24 @@ my %results = PreFlightChecks::getResults();
 ## Check we are root, otherwise we dont have enough privileges to check all the things.
 if ( ! $results{isroot} ) {
 	Messaging::critical("Need to be root to run this script, exiting...");
-	exit 1
+	#exit 1
 }
 
 foreach my $key  (keys %results) {
 	print "$key => $results{$key}\n";
 }
 
-if ( ! $NOINFO )  { 
-	Messaging::info("Done");
+## GATHER FACTS
+require SystemFacts;
+my %sysfacts = SystemFacts::getFacts();
+foreach my $key  (keys %sysfacts) {
+	print "$key => $sysfacts{$key}\n";
 }
+
+require ApacheFacts;
+my %apachefacts = ApacheFacts::getFacts();
+foreach my $key  (keys %apachefacts) {
+	print "$key => $apachefacts{$key}\n";
+}
+
+Messaging::info("Done");
