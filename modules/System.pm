@@ -1,5 +1,7 @@
 package System;
 
+use POSIX;
+
 sub get_hostname {
 	our $hostname = `which hostname`;
         chomp($hostname);
@@ -25,5 +27,11 @@ sub get_ip {
 		return $ip;
 	}
 }
+
+
+sub get_ram {
+	my $available_mem = `LANGUAGE=en_GB.UTF-8 free | grep \"Mem:\" | awk \'{ print \$2 }\'` / 1024;
+	return floor($available_mem);
+}	
 
 1;
